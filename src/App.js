@@ -13,12 +13,38 @@ class App {
     return Number(trimmedLottoCost);
   }
 
+  generateLottoNumbers = () => {
+    return MissionUtils.Random.pickUniqueNumbersInRange(1, 45, 6);
+  }
+
+  generateLotto = () => {
+    return new Lotto(this.generateLottoNumbers());
+  }
+
+  #calculateTicketCount(lottoCost) {
+    return lottoCost / 1000;
+  }
+
+  #printPurchaseMessage(ticketCount) {
+    MissionUtils.Console.print(`\n${ticketCount}개를 구매했습니다.`);
+  }
+
+  #generateAndPrintLottos(ticketCount) {
+    for (let i = 0; i < ticketCount; i++) {
+      const lotto = this.generateLotto();
+      MissionUtils.Console.print(`[${lotto.getNumbers().join(', ')}]`);
+    }
+  }
+
   async run() {
     try {
       const lottoCost = await this.inputLottoCost();
-      MissionUtils.Console.print(lottoCost);
+      const ticketCount = this.#calculateTicketCount(lottoCost);
+      this.#printPurchaseMessage(ticketCount);
+      this.#generateAndPrintLottos(ticketCount);
     } catch (error) {
       MissionUtils.Console.print(error.message);
+      return;
     }
   }
 }
