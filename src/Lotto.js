@@ -10,9 +10,9 @@ class Lotto {
     if (numbers.length !== 6) {
       throw new Error("[ERROR] 로또 번호는 6개여야 합니다.");
     }
-    this.#validateNumbers(numbers);
-    this.#validateDuplicateLottoNumber(numbers);
-    this.#validateRangeLottoNumber(numbers);
+    Lotto.#validateLottoNumbers(numbers);
+    Lotto.#validateDuplicateLottoNumber(numbers);
+    Lotto.#validateRangeLottoNumber(numbers);
   }
 
   static validateLottoCost(lottoCost) {
@@ -50,19 +50,28 @@ class Lotto {
     }
   }
 
-  #validateNumbers(numbers) {
+  static validateWinningNumbers(numbers) {
+    if (numbers.length !== 6) {
+      throw new Error("[ERROR] 로또 번호는 6개여야 합니다.");
+    }
+    Lotto.#validateLottoNumbers(numbers);
+    Lotto.#validateDuplicateLottoNumber(numbers);
+    Lotto.#validateRangeLottoNumber(numbers);
+  }
+
+  static #validateLottoNumbers(numbers) {
     if (!Array.isArray(numbers) || numbers.some((n) => !Number.isInteger(n))) {
       throw new Error("[ERROR] 로또 번호는 정수여야 합니다.");
     }
   }
 
-  #validateDuplicateLottoNumber(numbers) {
+  static #validateDuplicateLottoNumber(numbers) {
     if (numbers.some((number, index, arr) => arr.indexOf(number) !== index)) {
       throw new Error("[ERROR] 로또 번호는 중복되지 않아야 합니다.");
     }
   }
 
-  #validateRangeLottoNumber(numbers) {
+  static #validateRangeLottoNumber(numbers) {
     if (numbers.some(number => number < 1 || number > 45)) {
       throw new Error("[ERROR] 로또 번호는 1 이상 45 이하의 정수여야 합니다.");
     }

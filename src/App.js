@@ -36,12 +36,20 @@ class App {
     }
   }
 
+  inputWinningNumbers = async () => {
+    const winningNumbersInput = await MissionUtils.Console.readLineAsync("\n당첨 번호를 입력해 주세요.\n");
+    const winningNumbers = winningNumbersInput.split(",").map((num) => Number(num.trim()));
+    Lotto.validateWinningNumbers(winningNumbers);
+    return winningNumbers;
+  }
+
   async run() {
     try {
       const lottoCost = await this.inputLottoCost();
       const ticketCount = this.#calculateTicketCount(lottoCost);
       this.#printPurchaseMessage(ticketCount);
       this.#generateAndPrintLottos(ticketCount);
+      const winningNumbers = await this.inputWinningNumbers();
     } catch (error) {
       MissionUtils.Console.print(error.message);
       return;
