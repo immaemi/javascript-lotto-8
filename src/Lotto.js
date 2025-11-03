@@ -1,11 +1,42 @@
 class Lotto {
   #numbers;
 
+  // Constructor
   constructor(numbers) {
     this.#validate(numbers);
     this.#numbers = numbers;
   }
 
+  // Public Instance Methods
+  getNumbers() {
+    return this.#getSortedLottoNumbers();
+  }
+
+  // Public Static Methods
+  static validateLottoCost(lottoCost) {
+    this.#validateLottoCostIsInteger(lottoCost);
+    const amount = Number(lottoCost);
+    this.#validateLottoCostIsPositive(amount);
+    this.#validateLottoCostMinAmount(amount);
+    this.#validateLottoCostUnit(amount);
+  }
+
+  static validateWinningNumbers(numbers) {
+    if (numbers.length !== 6) {
+      throw new Error("[ERROR] 로또 번호는 6개여야 합니다.");
+    }
+    Lotto.#validateLottoNumbers(numbers);
+    Lotto.#validateDuplicateLottoNumber(numbers);
+    Lotto.#validateRangeLottoNumber(numbers);
+  }
+
+  static validateBonusNumber(bonusNumber, winningNumbers) {
+    Lotto.#validateBonusNumberIsInteger(bonusNumber);
+    Lotto.#validateBonusNumberRange(bonusNumber);
+    Lotto.#validateBonusNumberDuplicate(bonusNumber, winningNumbers);
+  }
+
+  // Private Instance Methods
   #validate(numbers) {
     if (numbers.length !== 6) {
       throw new Error("[ERROR] 로또 번호는 6개여야 합니다.");
@@ -15,21 +46,30 @@ class Lotto {
     Lotto.#validateRangeLottoNumber(numbers);
   }
 
-  static validateLottoCost(lottoCost) {
-    this.#validateLottoCostIsInteger(lottoCost);
-    const amount = Number(lottoCost);
-    this.#validateLottoCostIsPositive(amount);
-    this.#validateLottoCostMinAmount(amount);
-    this.#validateLottoCostUnit(amount);
+  #sortLottoNumber(numbers) {
+    return [...numbers].sort((a, b) => a - b);
   }
 
+  #getSortedLottoNumbers() {
+    return this.#sortLottoNumber(this.#numbers);
+  }
+
+  // Private Static Methods - Lotto Cost Validation
   static #validateLottoCostIsInteger(lottoCost) {
-    if (!/^-?\d+$/.test(lottoCost)) {
-      if (/^-?\d+\.\d+$/.test(lottoCost)) {
-        throw new Error("[ERROR] 구입 금액은 정수여야 합니다.");
-      }
+    if (Lotto.#isDecimalNumber(lottoCost)) {
+      throw new Error("[ERROR] 구입 금액은 정수여야 합니다.");
+    }
+    if (!Lotto.#isIntegerString(lottoCost)) {
       throw new Error("[ERROR] 구입 금액은 숫자여야 합니다.");
     }
+  }
+
+  static #isDecimalNumber(lottoCost) {
+    return /^-?\d+\.\d+$/.test(lottoCost);
+  }
+
+  static #isIntegerString(lottoCost) {
+    return /^-?\d+$/.test(lottoCost);
   }
 
   static #validateLottoCostIsPositive(amount) {
@@ -50,15 +90,7 @@ class Lotto {
     }
   }
 
-  static validateWinningNumbers(numbers) {
-    if (numbers.length !== 6) {
-      throw new Error("[ERROR] 로또 번호는 6개여야 합니다.");
-    }
-    Lotto.#validateLottoNumbers(numbers);
-    Lotto.#validateDuplicateLottoNumber(numbers);
-    Lotto.#validateRangeLottoNumber(numbers);
-  }
-
+  // Private Static Methods - Lotto Numbers Validation
   static #validateLottoNumbers(numbers) {
     if (!Array.isArray(numbers) || numbers.some((n) => !Number.isInteger(n))) {
       throw new Error("[ERROR] 로또 번호는 정수여야 합니다.");
@@ -72,29 +104,12 @@ class Lotto {
   }
 
   static #validateRangeLottoNumber(numbers) {
-    if (numbers.some(number => number < 1 || number > 45)) {
+    if (numbers.some((number) => number < 1 || number > 45)) {
       throw new Error("[ERROR] 로또 번호는 1 이상 45 이하의 정수여야 합니다.");
     }
   }
 
-  #sortLottoNumber(numbers) {
-    return [...numbers].sort((a, b) => a - b);
-  }
-
-  #getSortedLottoNumbers() {
-    return this.#sortLottoNumber(this.#numbers);
-  }
-
-  getNumbers() {
-    return this.#getSortedLottoNumbers();
-  }
-
-  static validateBonusNumber(bonusNumber, winningNumbers) {
-    Lotto.#validateBonusNumberIsInteger(bonusNumber);
-    Lotto.#validateBonusNumberRange(bonusNumber);
-    Lotto.#validateBonusNumberDuplicate(bonusNumber, winningNumbers);
-  }
-
+  // Private Static Methods - Bonus Number Validation
   static #validateBonusNumberIsInteger(bonusNumber) {
     if (!Number.isInteger(bonusNumber)) {
       throw new Error("[ERROR] 보너스 번호는 정수여야 합니다.");
@@ -103,7 +118,9 @@ class Lotto {
 
   static #validateBonusNumberRange(bonusNumber) {
     if (bonusNumber < 1 || bonusNumber > 45) {
-      throw new Error("[ERROR] 보너스 번호는 1 이상 45 이하의 정수여야 합니다.");
+      throw new Error(
+        "[ERROR] 보너스 번호는 1 이상 45 이하의 정수여야 합니다."
+      );
     }
   }
 
