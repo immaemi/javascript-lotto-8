@@ -43,6 +43,13 @@ class App {
     return winningNumbers;
   }
 
+  inputBonusNumber = async (winningNumbers) => {
+    const bonusNumberInput = await MissionUtils.Console.readLineAsync("\n보너스 번호를 입력해 주세요.\n");
+    const bonusNumber = Number(this.#trimInput(bonusNumberInput));
+    Lotto.validateBonusNumber(bonusNumber, winningNumbers);
+    return bonusNumber;
+  }
+
   async run() {
     try {
       const lottoCost = await this.inputLottoCost();
@@ -50,6 +57,7 @@ class App {
       this.#printPurchaseMessage(ticketCount);
       this.#generateAndPrintLottos(ticketCount);
       const winningNumbers = await this.inputWinningNumbers();
+      const bonusNumber = await this.inputBonusNumber(winningNumbers);
     } catch (error) {
       MissionUtils.Console.print(error.message);
       return;

@@ -88,6 +88,30 @@ class Lotto {
   getNumbers() {
     return this.#getSortedLottoNumbers();
   }
+
+  static validateBonusNumber(bonusNumber, winningNumbers) {
+    Lotto.#validateBonusNumberIsInteger(bonusNumber);
+    Lotto.#validateBonusNumberRange(bonusNumber);
+    Lotto.#validateBonusNumberDuplicate(bonusNumber, winningNumbers);
+  }
+
+  static #validateBonusNumberIsInteger(bonusNumber) {
+    if (!Number.isInteger(bonusNumber)) {
+      throw new Error("[ERROR] 보너스 번호는 정수여야 합니다.");
+    }
+  }
+
+  static #validateBonusNumberRange(bonusNumber) {
+    if (bonusNumber < 1 || bonusNumber > 45) {
+      throw new Error("[ERROR] 보너스 번호는 1 이상 45 이하의 정수여야 합니다.");
+    }
+  }
+
+  static #validateBonusNumberDuplicate(bonusNumber, winningNumbers) {
+    if (winningNumbers.includes(bonusNumber)) {
+      throw new Error("[ERROR] 보너스 번호는 당첨 번호와 중복될 수 없습니다.");
+    }
+  }
 }
 
 export default Lotto;
